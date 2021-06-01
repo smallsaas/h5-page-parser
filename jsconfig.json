@@ -1,0 +1,19 @@
+{
+  // vscode配置js
+  // 路径@的映射
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": [
+        "./src/*"
+      ]
+    }
+  },
+  "include": [
+    "./src/**/*.vue",
+    "./src/**/*.js", "src/components/Parser.jsx",
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}
