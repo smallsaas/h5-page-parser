@@ -91,9 +91,7 @@ export default {
       this.resArgField = JSON.parse(config.response)
       this.reqArgField = JSON.parse(config.request)
       this.active = this.reqArgField.default[this.reqArgField.fixed]
-      this.params[this.reqArgField.fixed] = this.active
-      this.params[this.reqArgField.pn] = 1
-      this.params[this.reqArgField.ps] = 10
+      this.handleHttpParams(this.active, 1, 10)
       this.getData()
     },
     getData () {
@@ -125,8 +123,7 @@ export default {
         })
     },
     onTabClick () {
-      this.params[this.reqArgField.fixed] = this.active
-      this.params[this.reqArgField.pn] = 1
+      this.handleHttpParams(this.active, 1, 10)
       this.list = []
       this.getData()
     },
@@ -134,8 +131,20 @@ export default {
       if (!this.list.length) {
         return
       }
-      this.params[this.reqArgField.pn] = this.page.cur + 1
+      this.handleHttpParams(this.active, this.page.cur + 1, 10)
       this.getData()
+    },
+    // 处理页码
+    handleHttpParams (fixed, pn = 1, ps = 10) {
+      if (this.reqArgField.fixed) {
+        this.params[this.reqArgField.fixed] = fixed
+      }
+      if (this.reqArgField.pn) {
+        this.params[this.reqArgField.pn] = pn
+      }
+      if (this.reqArgField.ps) {
+        this.params[this.reqArgField.ps] = ps
+      }
     }
   }
 }
