@@ -27,13 +27,9 @@ module.exports = {
   devServer: {
     overlay: false,
     proxy: {
-      '/sport/api/form/manage/define/loadFormInfo.do': {
-        target: 'http://106.53.93.81',
-        ws: true,
-        changeOrigin: true
-      },
-      '/sport/api/form/manage/define/submitForm.do': {
-        target: 'http://106.53.93.81',
+      '/sport': {
+        // target: 'http://106.53.93.81',
+        target: 'http://47.119.113.172:8000',
         ws: true,
         changeOrigin: true
       }

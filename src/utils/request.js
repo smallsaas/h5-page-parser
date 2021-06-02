@@ -1,5 +1,6 @@
 import axios from 'axios'
-import { Message } from 'element-ui';
+import { Toast } from 'vant'
+import qs from 'qs'
 
 // create an axios instance
 const service = axios.create({
@@ -18,6 +19,10 @@ service.interceptors.request.use(
     //   // please modify it according to the actual situation
     //   config.headers['X-Token'] = getToken()
     // }
+    if (config.method === 'post') {
+      config.headers['Content-Type'] = 'application/x-www-form-urlencoded'
+      config.data = qs.stringify(config.data)
+    }
     return config
   },
   error => {
@@ -41,22 +46,21 @@ service.interceptors.response.use(
    */
   response => {
     const res = response.data
-    let err_msg = res.retMsg
+    const errMsg = res.retMsg
     if (res.code === '000000') {
       return res
     }
-    Message.error(err_msg || res.code)
+    Toast(errMsg || res.code)
     return Promise.reject(res)
   },
   error => {
     console.log('service.interceptors.response:', error)
     if (error.code === 'ECONNABORTED' || error.message.indexOf('timeout') >= 0) {
-      Message.error('请求超时')
-      return Promise.reject({
-        reason: 'TIMEOUT'
-      })
+      Toast('请求超时')
+      const e = { reason: 'TIMEOUT' }
+      return Promise.reject(e)
     }
-    Message.error(error.message || 'request error');
+    Toast(error.message || 'request error')
     return Promise.reject(error)
   }
 )

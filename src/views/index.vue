@@ -1,13 +1,15 @@
 <template>
   <div>
-    <CustomPage v-if="config.type === 100" />
-    <ListPage v-if="config.type === 200" :config="config" />
+    <CustomPage v-if="config.type === '100'" />
+    <ListPage v-if="config.type === '200'" :config="config" />
   </div>
 </template>
 <script>
-import config from '@/config'
+// import config from '@/config'
 import ListPage from '@/components/ListPage'
 import CustomPage from '@/components/CustomPage'
+import { loadPageInfo } from '@/api'
+import { Base64, setTitle, urlParam } from '@/utils'
 
 export default {
   name: 'Parser',
@@ -17,16 +19,20 @@ export default {
   },
   data () {
     return {
-      config
+      config: {}
     }
   },
   created () {
-    console.log('xxx ', this.config)
+    this.init()
   },
   methods: {
-    // TODO 加载配置
-    init () {
-
+    async init () {
+      const res = await loadPageInfo({ id: urlParam('id') })
+      const config = res.data.page || {}
+      config.config = JSON.parse(Base64.decode(config.jsonDefine))
+      delete config.jsonDefine
+      this.config = config
+      setTitle(config.name)
     },
     loadConfig () {
 

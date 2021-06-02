@@ -57,7 +57,9 @@ export default {
       tabList: [],
       modules: [],
       moduleData: {},
+      // 列表数据
       list: [],
+      // 返回的列表需要的其他数据
       ext: {},
       params: {},
       loading: false,
@@ -76,14 +78,10 @@ export default {
     init () {
       const config = this.config.config
       const tabConfig = JSON.parse(config.tabConfig)
-      let modules = []
       if (tabConfig.show) {
-        this.tabList = config.moduleData[config.modules[0].key]
-        modules = config.modules.slice(1)
-      } else {
-        modules = config.modules.slice(0)
+        this.tabList = tabConfig.list
       }
-      this.modules = modules.map(item => {
+      this.modules = config.modules.map(item => {
         if (item.type === 'custom_component') {
           item.type = config.moduleData[item.key].name
           item.originType = 'custom_component'
@@ -94,6 +92,8 @@ export default {
       this.reqArgField = JSON.parse(config.request)
       this.active = this.reqArgField.default[this.reqArgField.fixed]
       this.params[this.reqArgField.fixed] = this.active
+      this.params[this.reqArgField.pn] = 1
+      this.params[this.reqArgField.ps] = 10
       this.getData()
     },
     getData () {
@@ -103,9 +103,16 @@ export default {
         .then((res) => {
           this.loading = false
           if (Object.prototype.toString.call(res.data) === '[object Object]' && res.data.code === '000000') {
-            const list = this.$f.safeData(res.data, this.resArgField.list, [])
+            const otherField = this.reqArgField.other || []
+            for (let i = 0; i < otherField.length; i++) {
+              const field = otherField[i]
+              if (Object.prototype.toString.call(res.data) === '[object Object]') {
+                this.ext[field] = Object.assign({}, (this.ext[field] || {}), this.$f.safeData(res.data, 'data.' + field, {}))
+              }
+            }
+            const list = this.$f.safeData(res.data, 'data.' + this.resArgField.list, [])
             this.list = [...this.list, ...list]
-            this.page.total = this.$f.safeData(res.data, this.resArgField.total, 0)
+            this.page.total = this.$f.safeData(res.data, 'data.' + this.resArgField.total, 0)
             this.page.cur++
             if ((this.list.length >= this.page.total) || !list.length) {
               this.finished = true
@@ -118,17 +125,16 @@ export default {
         })
     },
     onTabClick () {
-      this.params.pn = 1
       this.params[this.reqArgField.fixed] = this.active
+      this.params[this.reqArgField.pn] = 1
       this.list = []
       this.getData()
     },
-    // TODO 未处理分页
     onLoad () {
       if (!this.list.length) {
         return
       }
-      this.params.pn = this.page.cur + 1
+      this.params[this.reqArgField.pn] = this.page.cur + 1
       this.getData()
     }
   }

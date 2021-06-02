@@ -12,7 +12,6 @@ import {
 import './style/global.less'
 remInit()
 
-
 Vue.use(Tabs)
 Vue.use(Tab)
 Vue.use(List)
