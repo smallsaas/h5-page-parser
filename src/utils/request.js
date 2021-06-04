@@ -19,8 +19,7 @@ service.interceptors.request.use(
     //   // please modify it according to the actual situation
     //   config.headers['X-Token'] = getToken()
     // }
-    if (config.method === 'post') {
-      config.headers['Content-Type'] = 'application/x-www-form-urlencoded'
+    if (config.method === 'post' && config.headers['Content-Type'] === 'application/x-www-form-urlencoded') {
       config.data = qs.stringify(config.data)
     }
     return config
@@ -47,7 +46,7 @@ service.interceptors.response.use(
   response => {
     const res = response.data
     const errMsg = res.retMsg
-    if (res.code === '000000') {
+    if (res.code === '00000') {
       return res
     }
     Toast(errMsg || res.code)

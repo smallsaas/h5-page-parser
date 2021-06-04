@@ -100,7 +100,7 @@ export default {
       axios.get(this.config.config.loadApi, { params: this.params })
         .then((res) => {
           this.loading = false
-          if (Object.prototype.toString.call(res.data) === '[object Object]' && res.data.code === '000000') {
+          if (Object.prototype.toString.call(res.data) === '[object Object]' && res.data.code.indexOf('00000') >= 0) {
             const otherField = this.reqArgField.other || []
             for (let i = 0; i < otherField.length; i++) {
               const field = otherField[i]

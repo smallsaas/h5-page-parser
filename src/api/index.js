@@ -1,9 +1,9 @@
 import request from '@/utils/request'
 
-export function loadPageInfo (params) {
+export function loadPageInfo (data) {
   return request({
-    url: '/sport/api/page/manage/making/loadPageInfo.do',
+    url: '/api.page.design.page/loadPageInfo',
     method: 'post',
-    params
+    data: data
   })
 }

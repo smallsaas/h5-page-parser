@@ -1,7 +1,7 @@
 <template>
   <div>
-    <CustomPage v-if="config.type === '100'" />
-    <ListPage v-if="config.type === '200'" :config="config" />
+    <CustomPage v-if="config.pageType === '100'" />
+    <ListPage v-if="config.pageType === '200'" :config="config" />
   </div>
 </template>
 <script>
@@ -28,7 +28,7 @@ export default {
   methods: {
     async init () {
       const res = await loadPageInfo({ id: urlParam('id') })
-      const config = res.data.page || {}
+      const config = res.data || {}
       config.config = JSON.parse(Base64.decode(config.jsonDefine))
       delete config.jsonDefine
       this.config = config

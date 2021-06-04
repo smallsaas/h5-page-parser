@@ -27,9 +27,9 @@ module.exports = {
   devServer: {
     overlay: false,
     proxy: {
-      '/sport': {
+      '/api': {
         // target: 'http://106.53.93.81',
-        target: 'http://47.119.113.172:8000',
+        target: 'http://47.119.113.172:8380',
         ws: true,
         changeOrigin: true
       }
