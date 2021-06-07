@@ -77,7 +77,7 @@ export default {
   methods: {
     init () {
       const config = this.config.config
-      const tabConfig = JSON.parse(config.tabConfig)
+      const tabConfig = config.tabConfig
       if (tabConfig.show) {
         this.tabList = tabConfig.list
       }
@@ -88,8 +88,8 @@ export default {
         }
         return item
       })
-      this.resArgField = JSON.parse(config.response)
-      this.reqArgField = JSON.parse(config.request)
+      this.resArgField = config.response
+      this.reqArgField = config.request
       this.active = this.reqArgField.default[this.reqArgField.fixed]
       this.handleHttpParams(this.active, 1, 10)
       this.getData()
