@@ -1,5 +1,5 @@
 <template>
-  <div class="test-comp flex-center" @click="jumpPage">测试组件</div>
+  <div class="test-comp flex-center" @click="jumpPage">{{ data }}</div>
 </template>
 <script>
 export default {
@@ -7,10 +7,13 @@ export default {
   props: {
     item: Object,
     ext: Object,
-    moduleData: Object
+    moduleData: Object,
+    sourceData: Object
   },
   computed: {
-
+    data () {
+      return this.sourceData[this.moduleData.fromFidle]
+    }
   },
   methods: {
     jumpPage () {
