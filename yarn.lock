@@ -4454,6 +4454,18 @@ gzip-size@^5.0.0:
     duplexer "^0.1.1"
     pify "^4.0.1"
 
+h5-form-render@^0.1.5:
+  version "0.1.5"
+  resolved "https://registry.yarnpkg.com/h5-form-render/-/h5-form-render-0.1.5.tgz#15a37291b01190668f93b1d0a9e4272e5e0add1e"
+  integrity sha512-ytr+VNm8bfx4/3D+7ylCQ8GvJCs1W+rFE/v1aMrUnToSdPHFg/Yb2E2vI9P1lS0u2QcYPx/iXNGmNpPIzod7UQ==
+  dependencies:
+    axios "^0.21.1"
+    core-js "^3.6.5"
+    lodash.clonedeep "^4.5.0"
+    vant "^2.11.3"
+    vue "^2.6.11"
+    vue-router "^3.4.9"
+
 handle-thing@^2.0.0:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/handle-thing/-/handle-thing-2.0.1.tgz#857f79ce359580c340d43081cc648970d0bb234e"

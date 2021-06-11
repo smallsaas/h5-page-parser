@@ -10,6 +10,9 @@ module.exports = {
   /* 代码保存时进行eslint检测 */
   lintOnSave: true,
   filenameHashing: false,
+  transpileDependencies: [
+    'h5-form-render',
+  ],
   configureWebpack: config => {
     if (process.env.NODE_ENV === 'production') {
       return {
@@ -28,8 +31,7 @@ module.exports = {
     overlay: false,
     proxy: {
       '/api': {
-        // target: 'http://106.53.93.81',
-        target: 'http://47.119.113.172:8380',
+        target: 'http://106.53.93.81',
         ws: true,
         changeOrigin: true
       }
@@ -42,7 +44,7 @@ module.exports = {
         lessOptions: {
           modifyVars: {
             // 自定义的变量
-            'primary-color': '#e12229'
+            'primary-color': '#1989fa'
           },
         }
       },

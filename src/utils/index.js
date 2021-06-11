@@ -70,6 +70,18 @@ export const safeData = (argData, argCheck, argValue, argSetValueForce) => {
   return argData[temKey[temLen - 1]] || argValue
 }
 
+// jumpPage
+export const jumpPage = (argPath) => {
+  if (!argPath) {
+    return
+  }
+  if (argPath.indexOf('http') >= 0) {
+    location.href = argPath
+    return
+  }
+  router.push(argPath)
+}
+
 /**
  * @function
  * @description 页面跳转

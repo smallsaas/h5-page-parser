@@ -1,6 +1,6 @@
 <template>
   <div>
-    <van-tabs v-model="active" @click="onTabClick">
+    <van-tabs v-model="active" @click="onTabClick" v-if="showTabs">
       <van-tab
         :title="item.name"
         :name="item.value"
@@ -8,7 +8,7 @@
         :key="index"
       ></van-tab>
     </van-tabs>
-    <div class="mg-t10">
+    <div class="pd-t10">
       <div class="module_wrap" v-for="(item, index) in modules" :key="index">
         <div class="module_comp_wrapper mg-b15">
           <div v-if="item.originType !== 'custom_component'">
@@ -42,6 +42,7 @@
 <script>
 import WidgetJSX from '@/components/widget'
 import axios from 'axios'
+import request from '@/utils/request'
 
 export default {
   name: 'ListPage',
@@ -54,6 +55,7 @@ export default {
   data () {
     return {
       active: '',
+      showTabs: true,
       tabList: [],
       modules: [],
       moduleData: {},
@@ -78,9 +80,11 @@ export default {
     init () {
       const config = this.config.config
       const tabConfig = config.tabConfig
+      this.showTabs = tabConfig.show
       if (tabConfig.show) {
         this.tabList = tabConfig.list
       }
+      this.moduleData = config.moduleData
       this.modules = config.modules.map(item => {
         if (item.type === 'custom_component') {
           item.type = config.moduleData[item.key].name
@@ -93,34 +97,6 @@ export default {
       this.active = this.reqArgField.default[this.reqArgField.fixed]
       this.handleHttpParams(this.active, 1, 10)
       this.getData()
-    },
-    getData () {
-      this.loading = true
-      this.finished = false
-      axios.get(this.config.config.loadApi, { params: this.params })
-        .then((res) => {
-          this.loading = false
-          if (Object.prototype.toString.call(res.data) === '[object Object]' && res.data.code.indexOf('00000') >= 0) {
-            const otherField = this.reqArgField.other || []
-            for (let i = 0; i < otherField.length; i++) {
-              const field = otherField[i]
-              if (Object.prototype.toString.call(res.data) === '[object Object]') {
-                this.ext[field] = Object.assign({}, (this.ext[field] || {}), this.$f.safeData(res.data, 'data.' + field, {}))
-              }
-            }
-            const list = this.$f.safeData(res.data, 'data.' + this.resArgField.list, [])
-            this.list = [...this.list, ...list]
-            this.page.total = this.$f.safeData(res.data, 'data.' + this.resArgField.total, 0)
-            this.page.cur++
-            if ((this.list.length >= this.page.total) || !list.length) {
-              this.finished = true
-            }
-          }
-        })
-        .catch((err) => {
-          console.log(err)
-          this.loading = false
-        })
     },
     onTabClick () {
       this.handleHttpParams(this.active, 1, 10)
@@ -145,7 +121,63 @@ export default {
       if (this.reqArgField.ps) {
         this.params[this.reqArgField.ps] = ps
       }
-    }
+    },
+    getData () {
+      this.loading = true
+      this.finished = false
+      if (this.config.config.loadApi.indexOf('http') >= 0) {
+        this.outsideApiHandler()
+        return
+      }
+      this.selfApiHandler()
+    },
+    // 自身系统的接口处理
+    selfApiHandler () {
+      const params = {
+        url: this.config.config.loadApi,
+        method: 'post',
+        data: this.params
+      }
+      request(params).then(res => {
+        this.loading = false
+        this.getDataSucHandler(res)
+      }).catch((err) => {
+        this.getDataFailHandler(err)
+      })
+    },
+    // 外部系统的接口处理
+    outsideApiHandler () {
+      axios.get(this.config.config.loadApi, { params: this.params })
+        .then((res) => {
+          this.loading = false
+          if (Object.prototype.toString.call(res.data) === '[object Object]' && res.data.code.indexOf('00000') >= 0) {
+            this.getDataSucHandler(res.data)
+          }
+        })
+        .catch((err) => {
+          this.getDataFailHandler(err)
+        })
+    },
+    getDataSucHandler (res) {
+      const otherField = this.reqArgField.other || []
+      for (let i = 0; i < otherField.length; i++) {
+        const field = otherField[i]
+        if (Object.prototype.toString.call(res.data) === '[object Object]') {
+          this.ext[field] = Object.assign({}, (this.ext[field] || {}), this.$f.safeData(res, 'data.' + field, {}))
+        }
+      }
+      const list = this.$f.safeData(res, 'data.' + this.resArgField.list, [])
+      this.list = [...this.list, ...list]
+      this.page.total = this.$f.safeData(res, 'data.' + this.resArgField.total, 0)
+      this.page.cur++
+      if ((this.list.length >= this.page.total) || !list.length) {
+        this.finished = true
+      }
+    },
+    getDataFailHandler (err) {
+      console.log(err)
+      this.loading = false
+    },
   }
 }
 </script>

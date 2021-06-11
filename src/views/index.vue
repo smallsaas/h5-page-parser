@@ -1,6 +1,6 @@
 <template>
   <div>
-    <CustomPage v-if="config.pageType === '100'" />
+    <CustomPage v-if="config.pageType === '100'" :config="config" />
     <ListPage v-if="config.pageType === '200'" :config="config" />
   </div>
 </template>
@@ -24,6 +24,12 @@ export default {
   },
   created () {
     this.init()
+  },
+  watch: {
+    $route () {
+      this.config = {}
+      this.init()
+    }
   },
   methods: {
     async init () {
