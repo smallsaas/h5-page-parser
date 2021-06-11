@@ -26,7 +26,7 @@ export default {
   },
   methods: {
     jumpPage (item) {
-      this.$f.jumpPage(item.itemNavigation)
+      this.$f.jumpPage(item.url)
     }
   }
 }
